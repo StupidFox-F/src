@@ -3,11 +3,14 @@ from faker import Faker
 from django.http import HttpResponse
 from student.models import Student
 
-fake = Faker()
+
 
 # Create your views here.
 def student(request):
     result = []
+
+    fake = Faker()
+
     for _ in range(20):
         first_name = fake.first_name()
         last_name = fake.last_name()
