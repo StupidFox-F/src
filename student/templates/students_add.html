@@ -2,9 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>$Title$</title>
+    <title>Students Add</title>
 </head>
+
 <body>
-$END$
+
+        <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <br><button type="submit">Add</button><br>
+    </form>
+
+
 </body>
+
 </html>

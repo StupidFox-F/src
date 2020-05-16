@@ -1,6 +1,9 @@
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django.urls import reverse
+
+from teacher.forms import TeacherAddForm
 from teacher.models import Teacher
 
 
@@ -21,16 +24,6 @@ def teachers_list(request):
         q &= Q(email=request.GET.get('email'))
 
     qs = qs.filter(q)
-    '''f_name = request.GET.get('fname')
-    l_name = request.GET.get('lname')
-    e_mail = request.GET.get('email')
-
-    if f_name:
-        qs = qs.filter(Q(first_name=f_name))
-    if l_name:
-        qs = qs.filter(Q(last_name=l_name))
-    if e_mail:
-        qs = qs.filter(Q(email=e_mail))'''
 
     result = '<br>'.join(
         str(teacher)
@@ -45,18 +38,27 @@ def teachers_list(request):
     )
 
 
-'''
-qs = Teacher.objects.all()
-    search = request.GET.get('fname')
-    if search:
-        qs = qs.filter(Q(first_name='fname') | Q(last_name='lname') | Q(email='email'))
-        
- if request.GET.get('fname'):
-        qs = qs.filter(first_name=request.GET.get('fname'))
+def teachers_add(request):
 
-    if request.GET.get('lname'):
-        qs = qs.filter(last_name=request.GET.get('lname'))
+    if request.method == 'POST':
+        form = TeacherAddForm(request.POST)
+        if form.is_valid():
+            phone_number = form.cleaned_data.get('phone_number').strip()
+            email = form.cleaned_data.get('email').strip()
 
-    if request.GET.get('email'):
-        qs = qs.filter(email=request.GET.get('email'))
-'''
+            is_teacher_exists = Teacher.objects.filter(Q(phone_number=phone_number) |
+                                                       Q(email=email)).exists()
+            if is_teacher_exists:
+                error_massage = "Teacher not added. Teacher with such phone_number and email is exists! Try again:"
+                return render(request, teachers_add, {'form': form, "error_massage": error_massage},
+                              status=400)
+            form.save()
+            return HttpResponseRedirect(reverse('teacher'))
+    else:
+        form = TeacherAddForm()
+
+    return render(
+        request=request,
+        template_name='teachers_add.html',
+        context={'form': form}
+    )
