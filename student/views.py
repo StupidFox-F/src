@@ -9,19 +9,6 @@ from student.models import Student
 
 
 # Create your views here.
-'''def gen_student(request):
-    STUDENT_NUMBER = 100
-
-    student_number = str(request.GET.get('student_number', STUDENT_NUMBER))
-    if student_number.isdigit():
-        try:
-            for _ in range(int(student_number)):
-                Student.generate_student()
-        except Exception as ex:
-            return HttpResponse(f'Data added fail! {ex}', status=500)
-        return redirect('student:data_success')
-    return HttpResponse("Error. The value must be numeric and greater than zero.", status=400)'''
-
 
 def students_list(request):
     qs = Student.objects.all()
