@@ -4,7 +4,7 @@ from django.urls import reverse
 from faker import Faker
 from django.http import HttpResponse, HttpResponseRedirect
 
-from student.forms import StudentAddForm
+from student.forms import StudentAddForm, StudentEditForm
 from student.models import Student
 
 
@@ -39,7 +39,6 @@ def students_list(request):
 
 
 def students_add(request):
-
     if request.method == 'POST':
         form = StudentAddForm(request.POST)
         if form.is_valid():
@@ -61,4 +60,26 @@ def students_add(request):
         request=request,
         template_name='students_add.html',
         context={'form': form}
+    )
+
+
+def students_edit(request, id):
+
+    student = Student.objects.get(id=id)
+
+    if request.method == 'POST':
+        form = StudentAddForm(request.POST)
+        if form.is_valid():
+            student = form.save()
+            print(f'Student created: {student}')
+            return HttpResponseRedirect(reverse('student'))
+    else:
+        form = StudentEditForm(
+            instance=student
+        )
+
+    return render(
+         request=request,
+         template_name='students_add.html',
+         context={'form': form}
     )

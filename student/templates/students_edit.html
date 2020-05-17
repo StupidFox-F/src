@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Students Add</title>
+    <title>Edit Students</title>
 </head>
 
 <body>
@@ -10,8 +10,7 @@
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-
-        <br><button type="submit">Add</button><br>
+        <br><button type="submit">Save</button><br>
     </form>
 
 
