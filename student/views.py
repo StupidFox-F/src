@@ -1,8 +1,9 @@
 from django.db.models import Q
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from faker import Faker
-from django.http import HttpResponse, HttpResponseRedirect
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 
 from student.forms import StudentAddForm, StudentEditForm
 from student.models import Student
@@ -34,11 +35,14 @@ def students_list(request):
     return render(
         request=request,
         template_name='students_list.html',
-        context={'students_list': result}
+        context={'students_list': result,
+                 'test_list' : [1, 2, 3, 4]
+                 }
     )
 
 
 def students_add(request):
+
     if request.method == 'POST':
         form = StudentAddForm(request.POST)
         if form.is_valid():
@@ -59,16 +63,21 @@ def students_add(request):
     return render(
         request=request,
         template_name='students_add.html',
-        context={'form': form}
+        context={'form': form,
+                 'tittle': 'Add Students'}
     )
 
 
 def students_edit(request, id):
 
-    student = Student.objects.get(id=id)
+    try:
+        student = Student.objects.get(id=id)
+    except ObjectDoesNotExist:
+        return HttpResponseNotFound(f"Student with id{id} doesn`t exist")
 
     if request.method == 'POST':
-        form = StudentAddForm(request.POST)
+        form = StudentEditForm(request.POST, instance=student)
+
         if form.is_valid():
             student = form.save()
             print(f'Student created: {student}')
@@ -80,6 +89,13 @@ def students_edit(request, id):
 
     return render(
          request=request,
-         template_name='students_add.html',
-         context={'form': form}
+         template_name='students_edit.html',
+         context={'form': form,
+                  'title': 'Student_edit'}
     )
+
+def student_delete(request, id):
+
+    student = get_object_or_404(Student, id=id)
+    student.delete()
+    return HttpResponseRedirect(reverse('student'))
