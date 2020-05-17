@@ -36,7 +36,7 @@ def students_list(request):
         request=request,
         template_name='students_list.html',
         context={'students_list': result,
-                 'test_list' : [1, 2, 3, 4]
+                 'student_list' : 'Add Student'
                  }
     )
 

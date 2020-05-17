@@ -1,22 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<form>
-        <label for="fname">First name:</label><br>
-        <input type="text" id="fname" name="fname"><br>
-        <label for="lname">Last name:</label><br>
-        <input type="text" id="lname" name="lname">
-        <br><label for="email">Enter your email:</label><br>
-        <input type="email" id="email" name="email">
-        <br><button type="submit">Search</button><br>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <form name="form">
+      <label for="name">Name:</label><br>
+      <input type="text" id="name" name="name"><br>
+      <label for="specialty">Teacher</label><br>
+      <input type="text" id="specialty" name="specialty"><br>
+        <label for="course_name">Cours</label><br>
+      <input type="text" id="course_name" name="course_name">
+      <button type="submit">Search</button>
     </form>
 
-{{ groups_list | safe }}
+{% for group in groups_list %}
+    {{ group.id }}
+    {{ group.name }}
+    {{ group.teacher }}
+    {{ group.course}}
+    <a href="{% url 'group:edit' group.id %}">edit |</a>
+    <a href="{% url 'group:delete' group.id %}">delete</a>
+    <br>
+{% endfor %}
 
-</body>
-
-</html>
+{% endblock %}

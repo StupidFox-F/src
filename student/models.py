@@ -6,6 +6,8 @@ from django.db import models
 # Create your models here.
 from faker import Faker
 
+from group.models import Group
+
 
 class Student(models.Model):
     first_name = models.CharField(max_length=40, null=False)
@@ -13,6 +15,7 @@ class Student(models.Model):
     email = models.CharField(max_length=50, null=True)
     phone_number = models.CharField(max_length=50, null=True)
     birthdate = models.DateField(default=datetime.datetime.now().date())
+    group = models.ForeignKey(to=Group, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return f'{self.first_name}, {self.last_name}, {self.birthdate}, {self.phone_number}, {self.email}'

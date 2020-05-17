@@ -16,8 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from student.views import students_list, students_add, students_edit
-from teacher.views import teachers_list, teachers_add
-from group.views import groups_list
+from teacher.views import teachers_list, teachers_add, teachers_edit
+from group.views import groups_list, groups_add, groups_edit
 
 
 urlpatterns = {
@@ -25,7 +25,10 @@ urlpatterns = {
     path('student/', students_list, name='student'),
     path('teacher/', teachers_list, name='teacher'),
     path('group/', groups_list),
+    path('group/add/', groups_add),
+    path('group/edit/<int:id>', groups_edit),
     path('teacher/add/', teachers_add),
     path('student/add/', students_add),
     path('student/edit/<int:id>', students_edit),
+    path('teacher/edit/<int:id>', teachers_edit),
 }

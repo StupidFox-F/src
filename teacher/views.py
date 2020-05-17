@@ -1,9 +1,9 @@
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
-from teacher.forms import TeacherAddForm
+from teacher.forms import TeacherAddForm, TeacherEditForm
 from teacher.models import Teacher
 
 
@@ -62,3 +62,29 @@ def teachers_add(request):
         template_name='teachers_add.html',
         context={'form': form}
     )
+
+
+def teachers_edit(request, id):
+
+    teachers_edit_template = 'edit_teacher.html'
+    try:
+        teacher = Teacher.objects.get(id=id)
+    except Teacher.DoesNotExist:
+        return HttpResponseNotFound(f"Teacher with id={id} doesn't exist")
+
+    if request.method == 'POST':
+        form = TeacherEditForm(request.POST or None, instance=teacher)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('teacher:list'))
+    else:
+        form = TeacherEditForm(instance=teacher)
+    return render(request, teachers_edit_template,
+                  {'form': form, 'title': 'Edit teacher'})
+
+
+def delete_teacher(request, id):
+
+    teacher = get_object_or_404(Teacher, id=id)
+    teacher.delete()
+    return HttpResponseRedirect(reverse('teacher:list'))
